@@ -1,0 +1,29 @@
+[
+	{
+		"title": "pan",
+		"description": "producto a base de harina",
+		"price": 100,
+		"thumbnail": "not-available",
+		"code": "1A",
+		"stock": 10,
+		"id": 0
+	},
+	{
+		"title": "galletas",
+		"description": "alto en azucares",
+		"price": 250,
+		"thumbnail": "not-available",
+		"code": "2A",
+		"stock": 30,
+		"id": 1
+	},
+	{
+		"title": "botella agua",
+		"description": "agua purificada",
+		"price": 80,
+		"thumbnail": "not-available",
+		"code": "3A",
+		"stock": 25,
+		"id": 2
+	}
+]
