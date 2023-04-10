@@ -20,6 +20,9 @@ class ProductManager {
 
   // Agrega un producto a la lista de productos
   async addProduct( newProduct ) {
+    newProduct.status = newProduct.status ?? true;
+    newProduct.thumbnails = newProduct.thumbnails || [];
+
     if(!isValidProduct( newProduct ))
       throw new Error('product is not valid');
 
@@ -60,20 +63,19 @@ class ProductManager {
 
 
   // Actualiza el producto de la lista
-  async updateProduct( product ) {
+  async updateProduct( id, update ) {
     // revisa que las propiedades sean validas
-    if(!reviewProductProperties( product ))
+    if(!reviewProductProperties( update ))
       throw new Error("Product update is not valid. It seems that the update props don't match the product props");
       
     const products = await this.getProducts();
-    let productToUpdate = products.find( p => p.id === product.id );
-      
+    let productToUpdate = products.find( p => p.id == id );
     // revisa si el producto a actualizar existe
     if(!productToUpdate)
-      throw new Error("Product update is not valid. It seems that there is no product with the espicified ID");
+      throw new Error("Product update is not valid. It seems that there is no product with the spicified ID");
       
-    for(let prop in product){
-      productToUpdate[prop] = product[prop];
+    for(let prop in update){
+      productToUpdate[prop] = update[prop];
     }
       
     if(!isValidProduct(productToUpdate))
@@ -89,9 +91,12 @@ class ProductManager {
     const products = await this.getProducts();
 
     const filteredProducts = products.filter( prod => {
-      if( prod.id !== id )
+      if( prod.id != id )
         return prod;
     });
+
+    if(filteredProducts.length === products.length)
+      throw new Error('Product delete is not valid. It seems that there is no product with the spicified ID');
 
     await this.saveProducts( filteredProducts );
   } 
@@ -116,19 +121,44 @@ class ProductManager {
 
 const isValidProduct = ( product ) => {
   if( !product ) return false;
-  const { title, description, price, thumbnail, code, stock } = product;
+  const {
+    title,
+    description,
+    code,
+    price,
+    status,
+    stock,
+    category,
+    thumbnails 
+  } = product;
 
   if(
-    !matchType(title, 'string') ||                 //Validación titulo
-    !matchType(description, 'string')  ||          //Validación descripcion
-    !matchType(price, 'number') || price < 0 ||    //Validación precio
-    !matchType(thumbnail, 'string') ||             //Validaicón thumbnail
-    !matchType(code, 'string') ||                  //Validaicón code
-    !matchType(stock, 'number', true) || stock < 0 //Validaicón stock
+    !matchType(title, 'string') ||                    //Validación titulo
+    !matchType(description, 'string')  ||             //Validación descripcion
+    !matchType(code, 'string') ||                     //Validaicón code
+    !matchType(price, 'number') || price < 0 ||       //Validación precio
+    !matchType(status, 'boolean', true) ||            //Validación estado
+    !matchType(stock, 'number', true) || stock < 0 || //Validaicón stock
+    !matchType(category, 'string') ||                 //Validación categoria
+    !isValidThumbnails(thumbnails)                    //Validación thumbnails
   ) 
     return false;
     
   return true;
+}
+
+// Retorna true si la lista de thumbnails es valida
+const isValidThumbnails = ( thumbnailList ) => {
+
+  if( !Array.isArray(thumbnailList) )
+    return false;
+
+  for(const thumb of thumbnailList)
+    if( !matchType(thumb, 'string') )
+      return false;
+
+  return true;
+
 }
 
 
@@ -144,16 +174,16 @@ const matchType = ( data, type, canBeFalsy = false ) => {
 // Retorna true si el producto tiene la propiead ID, y además
 // todas sus propiedas corresponden a propiedas de productos
 const reviewProductProperties = ( product ) => {
-  if(!product.id) return false;
-
   const allowedProperties = [
+    'id',
     'title',
     'description',
-    'price',
-    'thumbnail',
     'code',
+    'price',
+    'status',
     'stock',
-    'id',
+    'category',
+    'thumbnails',
   ];
 
   for (const prop in product) {

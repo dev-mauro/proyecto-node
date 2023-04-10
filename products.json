@@ -25,5 +25,40 @@
 		"code": "3A",
 		"stock": 25,
 		"id": 2
+	},
+	{
+		"title": "bebida",
+		"description": "500cc con gas",
+		"code": "4A",
+		"price": 123,
+		"stock": 10,
+		"category": "bebidas",
+		"status": true,
+		"thumbnails": [],
+		"id": 3
+	},
+	{
+		"title": "bebida",
+		"description": "500cc con gas",
+		"code": "4B",
+		"price": 123,
+		"stock": 10,
+		"category": "bebidas",
+		"status": true,
+		"thumbnails": [],
+		"id": 4
+	},
+	{
+		"title": "bebida",
+		"description": "500cc con gas",
+		"code": "4D",
+		"price": 123,
+		"status": false,
+		"stock": 10,
+		"category": "bebidas",
+		"thumbnails": [
+			"adasd"
+		],
+		"id": 7
 	}
 ]
