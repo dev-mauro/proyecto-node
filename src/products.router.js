@@ -54,7 +54,7 @@ router.post('/', async(req, res) => {
   } catch (error) {
     res.status(400).send({
       "status": "bad request",
-      "messagge": error.message
+      "message": error.message
 
     });
   }
@@ -80,7 +80,7 @@ router.put('/:pid', async(req, res) => {
   } catch(error) {
     res.status(400).send({
       "status": "bad request",
-      "messagge": error.message
+      "message": error.message
     });
   }
 
@@ -101,7 +101,7 @@ router.delete('/:pid', async(req, res) => {
   } catch(error) {
     res.send({
       "status": "not found",
-      "messagge": error.message
+      "message": error.message
     });
   }
 

@@ -175,7 +175,6 @@ const matchType = ( data, type, canBeFalsy = false ) => {
 // todas sus propiedas corresponden a propiedas de productos
 const reviewProductProperties = ( product ) => {
   const allowedProperties = [
-    'id',
     'title',
     'description',
     'code',
