@@ -9,7 +9,7 @@ const { readFile, writeFile } = promises;
 class CartManager {
 
   constructor( path ) {
-    this.path = path || './carts.json';
+    this.path = path || './data/carts.json';
   }
 
 

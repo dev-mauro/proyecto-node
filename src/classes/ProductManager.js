@@ -14,7 +14,7 @@ const { readFile, writeFile } = promises;
 class ProductManager {
 
   constructor( path ) {
-    this.path = path || './products.json';
+    this.path = path || './data/products.json';
   }
 
 

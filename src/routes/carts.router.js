@@ -1,6 +1,7 @@
 import { Router } from "express";
 
-import { CartManager } from "./classes/CartManager.js";
+import { CartManager } from "../classes/CartManager.js";
+import { checkProduct } from "../helpers/checkProduct.js";
 
 const router = Router();
 
@@ -68,7 +69,7 @@ router.post('/', async(req, res) => {
 
 });
 
-router.post('/:cid/product/:pid', async(req, res) => {
+router.post('/:cid/product/:pid', checkProduct, async(req, res) => {
 
   const { cid, pid } = req.params;
   const { quantity = 1 } = req.body;
