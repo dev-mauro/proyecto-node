@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { ProductManager } from "../classes/ProductManager.js"
+import { emitChangeInProducts } from "../helpers/emitChangeInProducts.js";
 
 const router = Router();
 
@@ -49,7 +50,9 @@ router.post('/', async(req, res) => {
     res.send({
       "status": "success",
       "newProduct": newProduct
-    })
+    });
+
+    emitChangeInProducts( req );
 
   } catch (error) {
     res.status(400).send({
@@ -77,6 +80,8 @@ router.put('/:pid', async(req, res) => {
       },
     });
 
+    emitChangeInProducts( req );
+
   } catch(error) {
     res.status(400).send({
       "status": "bad request",
@@ -97,6 +102,8 @@ router.delete('/:pid', async(req, res) => {
       "status": "success",
       "deletedID": pid
     });
+
+    emitChangeInProducts( req );
 
   } catch(error) {
     res.send({

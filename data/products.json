@@ -1,3 +1,46 @@
 [
-  
+	{
+		"title": "bebida fanta",
+		"description": "500cc con gas",
+		"code": "4D",
+		"price": 123,
+		"status": false,
+		"stock": 10,
+		"category": "bebidas",
+		"thumbnails": [],
+		"id": 0
+	},
+	{
+		"title": "galletas de soda",
+		"description": "libre de azucar",
+		"code": "4T",
+		"price": 100,
+		"status": true,
+		"stock": 10,
+		"category": "galletas",
+		"thumbnails": [],
+		"id": 1
+	},
+	{
+		"title": "galletas chocolate",
+		"description": "libre de azucar",
+		"code": "4F",
+		"price": 120,
+		"status": true,
+		"stock": 20,
+		"category": "galletas",
+		"thumbnails": [],
+		"id": 2
+	},
+	{
+		"title": "galletas vainilla",
+		"description": "libre de azucar",
+		"code": "4G",
+		"price": 120,
+		"status": true,
+		"stock": 20,
+		"category": "galletas",
+		"thumbnails": [],
+		"id": 3
+	}
 ]
