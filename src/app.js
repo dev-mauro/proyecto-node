@@ -1,5 +1,6 @@
 import express from "express";
 import handlebars from 'express-handlebars'
+import mongoose from "mongoose";
 import { Server } from "socket.io";
 
 import productRouter from "./routes/products.router.js";
@@ -20,6 +21,9 @@ app.engine( 'handlebars', handlebars.engine() );
 app.set( 'view engine', 'handlebars' );
 app.set( 'views', __dirname + '/views' );
 
+// Mongoose connect
+mongoose.connect("mongodb+srv://silvac:contrasena123@cluster0.bmoglka.mongodb.net/ecommerce?retryWrites=true&w=majority");
+
 const server = app.listen( PORT, ( ) => {
   console.log(`Listening at PORT ${ PORT } - http://localhost:${PORT}`);
 });
@@ -28,6 +32,7 @@ const server = app.listen( PORT, ( ) => {
 const socketServerIO = new Server( server );
 app.set('io', socketServerIO);
 
+// Server router
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/', viewRouter );

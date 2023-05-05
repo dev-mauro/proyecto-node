@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { CartManager } from "../classes/CartManager.js";
+import { CartManager } from "../Dao/managers/CartManager.js";
 import { checkProduct } from "../helpers/checkProduct.js";
 
 const router = Router();

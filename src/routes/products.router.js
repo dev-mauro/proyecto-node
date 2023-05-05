@@ -1,22 +1,19 @@
 import { Router } from "express";
 
-import { ProductManager } from "../classes/ProductManager.js"
+import productModel from "../Dao/models/product.model.js";
 import { emitChangeInProducts } from "../helpers/emitChangeInProducts.js";
 
 const router = Router();
 
-const productManager = new ProductManager();
-
 // Lista todos los productos. Acepta ?limit query.
 router.get('/', async(req, res) => {
-
-  const { limit } = req.query;
-  const products = await productManager.getProducts();
+  const limit = req.query.limit ?? 0;
+  const products = await productModel.find().limit(limit);
   
-  if(!limit) return res.send( JSON.stringify({ products }) );
-
-  res.send( JSON.stringify({products: products.slice(0, limit)}) );
-
+  res.send({
+    status: "success",
+    products,
+  });
 });
 
 // Lista el producto con el pID solicitado
@@ -24,94 +21,104 @@ router.get('/:pid', async(req, res) => {
 
   const { pid } = req.params;
 
-  try {
+  const product = await productModel.findOne({_id: pid});
 
-    const requestedProduct = await productManager.getProductById( pid );
-    res.send( JSON.stringify({product: requestedProduct}) );
-
-  } catch( error ) {
-
+  if(!product)
     res.status(400).send({
       "status": "not-found",
-      "message": error.message
+      "message": "product not found"
     });
-  
-  }
 
-});
-
-router.post('/', async(req, res) => {
-
-  const newProduct = req.body;
-
-  try {
-    await productManager.addProduct( newProduct );
-
+  else
     res.send({
       "status": "success",
-      "newProduct": newProduct
+      product
+    });
+});
+
+// Ingresa un nuevo producto
+router.post('/', async(req, res) => {
+  const newProduct = req.body;
+
+  // Si no hay status, se setea en true
+  newProduct.status = newProduct.status ?? true;
+  // Si no hay thumbnails, se setea en []
+  newProduct.thumbnail = newProduct.thumbnail || [];
+
+  try {
+    const result = await productModel.create(newProduct);
+    res.send({
+      "status": "success",
+      "newProduct": result
     });
 
     emitChangeInProducts( req );
-
-  } catch (error) {
+  } catch(err) {
     res.status(400).send({
       "status": "bad request",
-      "message": error.message
-
+      "message": err.message
     });
   }
-
 });
 
+// Actualiza el producto con el pID solicitado
 router.put('/:pid', async(req, res) => {
-
   const productUpdate = req.body;
   const { pid } = req.params;
 
   try {
+    const result = await productModel.updateOne({_id: pid}, {$set: productUpdate});
 
-    await productManager.updateProduct(pid, productUpdate);
-    res.send({
-      "status": "success",
-      "update": {
-        id: pid,
-        ...productUpdate
-      },
-    });
+    if(result.acknowledged) {
+      res.send({
+        "status": "success",
+        "update": result,
+      });  
+      emitChangeInProducts( req );
+    } else {
+      res.status(500).send({
+        "status": "bad request",
+        result
+      });
+    }
 
-    emitChangeInProducts( req );
-
-  } catch(error) {
+  } catch(err) {
     res.status(400).send({
-      "status": "bad request",
-      "message": error.message
+      "status": "not found",
+      "message": err.message
     });
   }
-
 });
 
+// Elimina un producto con el pID solicitado
 router.delete('/:pid', async(req, res) => {
-
   const { pid } = req.params;
 
   try {
+    const result = await productModel.deleteOne({_id: pid});
 
-    await productManager.deleteProduct( pid );
-    res.send({
-      "status": "success",
-      "deletedID": pid
-    });
+    if(result.deletedCount > 0){
+      res.send({
+        "status": "success",
+        "result": {
+          "deletedID": pid,
+          result
+        }
+      });
+      emitChangeInProducts( req );
+    } else {
+      res.status(400).send({
+        "status": "not found",
+        result
+      });
+    }
 
-    emitChangeInProducts( req );
-
-  } catch(error) {
-    res.send({
-      "status": "not found",
-      "message": error.message
+  } catch (err) {
+    res.status(500).send({
+      "status": "bad request",
+      "message": err
     });
   }
-
 });
 
 export default router;

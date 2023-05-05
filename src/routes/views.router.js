@@ -1,12 +1,11 @@
 import { Router } from "express";
-import { ProductManager } from "../classes/ProductManager.js";
+
+import productModel from "../Dao/models/product.model.js";
 
 const router = Router();
-
-const productManager = new ProductManager();
-
 router.get( '/products', async(req, res) => {
-  const products = await productManager.getProducts();
+  const response = await productModel.find();
+  const products = response.map( product => product.toObject());
 
   res.render('home', {
     products,
@@ -15,8 +14,8 @@ router.get( '/products', async(req, res) => {
 });
 
 router.get( '/realtimeproducts', async(req, res) => {
-
-  const products = await productManager.getProducts();
+  const response = await productModel.find();
+  const products = response.map( product => product.toObject());
 
   res.render('realTimeProducts', {
     products,

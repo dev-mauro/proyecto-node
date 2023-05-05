@@ -5,6 +5,8 @@ const { readFile, writeFile } = promises;
     title:str,
     description:str,
     price:int,
+    status:bool,
+    category:str,
     thumbnail:str,
     code:str,
     stock:int,

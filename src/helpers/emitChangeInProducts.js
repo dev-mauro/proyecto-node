@@ -1,12 +1,11 @@
-import { ProductManager } from '../classes/ProductManager.js';
+import productModel from "../Dao/models/product.model.js";
 
 const emitChangeInProducts = async(req) => {
   const io = req.app.get('io');
 
   if( !io.sockets.sockets.size ) return;
 
-  const productManager = new ProductManager();
-  const products = await productManager.getProducts();
+  const products = await productModel.find();
 
   io.emit( 'change-in-products', products );
 }
