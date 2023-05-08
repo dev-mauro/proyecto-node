@@ -6,6 +6,7 @@ import { Server } from "socket.io";
 import productRouter from "./routes/products.router.js";
 import cartRouter from "./routes/carts.router.js";
 import viewRouter from "./routes/views.router.js";
+import chatRouter from "./routes/chat.router.js";
 import __dirname from "./utils.js";
 
 const app = express();
@@ -35,4 +36,5 @@ app.set('io', socketServerIO);
 // Server router
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
+app.use('/chat', chatRouter);
 app.use('/', viewRouter );

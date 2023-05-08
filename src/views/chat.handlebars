@@ -1,0 +1,22 @@
+<div id="chatlog">
+  {{#each messages}}
+  <p>{{this.user}}: {{this.message}}</p>
+  {{/each}}
+</div>
+
+<form action="" id="form">
+  <div>
+    <label>Mensaje</label>
+    <input type="Text" placeholder="" id="message" required>
+  </div>
+
+  <div>
+    <label>Usuario</label>
+    <input type="email" placeholder="example@mail.com" id="email" required>
+  </div>
+
+  <button type="submit">Enviar</button>
+</form>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/{{script}}" type="module"></script>
