@@ -2,25 +2,13 @@
 
 import productModel from "../Dao/models/product.model.js";
 
-const checkProduct = async ( req, res, next ) => {
-  const { pid } = req.params;
-
+const checkProduct = async ( pid ) => {
   try {
-    const product = await productModel.find({__id: pid});
-    
-    if(product)
-      next();
-    
-    else
-      throw new Error("Product not found");
+    const product = await productModel.exists({_id: pid});
 
-  } catch (error) {
-
-    res.status(400).send({
-      "status": "not-found",
-      "message": error.message
-    });
-
+    return product !== null;
+  } catch(err) {
+    console.log(err)
   }
 }
 

@@ -1,15 +1,14 @@
 import { Router } from "express";
 
-import { CartManager } from "../Dao/managers/CartManager.js";
+import CartModel from "../Dao/models/cart.model.js";
 import { checkProduct } from "../helpers/checkProduct.js";
+import cartModel from "../Dao/models/cart.model.js";
 
 const router = Router();
 
-const cartManager = new CartManager();
-
 router.get('/', async(req, res) => {
 
-  const carts = await cartManager.getCarts();
+  const carts = await CartModel.find();
 
   res.send({
     "status": "success",
@@ -24,17 +23,17 @@ router.get('/:cid', async(req, res) => {
 
   try{
 
-    const requestedCart = await cartManager.getCartById( cid );
+    const requestedCart = await cartModel.find({_id: cid});
 
     res.send({
       "status": "success",
-      "products": requestedCart.products
+      "cart": requestedCart
     });
 
   } catch(error) {
 
     res.status(400).send({
-      "status": "not foud",
+      "status": "not found",
       "message": error.message
     });
 
@@ -48,12 +47,12 @@ router.post('/', async(req, res) => {
 
   try {
 
-    const id = await cartManager.addCart( newCart );
+    const result = await cartModel.create( newCart );
 
     res.send({
       "status": "success",
       "newCart": {
-        id,
+        result,
         ...newCart
       }
     });
@@ -69,20 +68,34 @@ router.post('/', async(req, res) => {
 
 });
 
-router.post('/:cid/product/:pid', checkProduct, async(req, res) => {
+router.post('/:cid/product/:pid', async(req, res) => {
 
   const { cid, pid } = req.params;
   const { quantity = 1 } = req.body;
 
-  const product = {id: Number(pid), quantity}
+  const productExist = await checkProduct( pid );
+
+  if(!productExist)
+    return res.send({
+      "status": "not found",
+      "message": "product not found"
+    });
 
   try {
 
-    const modifiedCart = await cartManager.addProductToCart(cid, product);
+    const { products: currentCartProducts } = await cartModel.findOne({_id: cid});
+    let product = currentCartProducts.find( product => product.id === pid );
+    
+    if( product )
+      product.quantity += quantity;
+    else
+      currentCartProducts.push({id: pid, quantity});
+
+    const result = await cartModel.updateOne({_id: cid}, {$set: {products: currentCartProducts}});
 
     res.send({
       "status": "success",
-      "modifiedCart": modifiedCart
+      "modifiedCart": result
     });
 
   } catch(error) {
