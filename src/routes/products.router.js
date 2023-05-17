@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import ProductManagerMongo from "../Dao/managers/ProductManagerMongo.js";
 import { emitChangeInProducts } from "../helpers/emitChangeInProducts.js";
+import { getProductLink } from "../helpers/getProductLink.js";
 
 const router = Router();
 const productManager = new ProductManagerMongo();
@@ -9,12 +10,19 @@ const productManager = new ProductManagerMongo();
 // Lista todos los productos. Acepta ?limit query.
 router.get('/', async(req, res) => {
 
-  const { limit } = req.query;
-  const products = await productManager.getProducts();
-  
-  if(!limit) return res.send( JSON.stringify({ products }) );
+  const result = await productManager.getProducts( req.query );
 
-  res.send( JSON.stringify({products: products.slice(0, limit)}) );
+  const prevLink = result.hasPrevPage ? 
+    getProductLink(req.query, result.prevPage) : null;
+  const nextLink = result.hasNextPage ?
+    getProductLink(req.query, result.nextPage) : null;
+
+  res.send( JSON.stringify({
+    status: "success",
+    ...result,
+    prevLink,
+    nextLink,
+  }) );
 
 });
 

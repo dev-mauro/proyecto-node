@@ -4,10 +4,13 @@
     <th>ID</th>
     <th>Nombre</th>
     <th>Descripcion</th>
+    <th>Categoria</th>
     <th>Precio</th>
     <th>Thumbnails</th>
     <th>Código</th>
     <th>Stock</th>
+    <th></th>
+    <th></th>
   </thead>
   <tbody>
     {{#each products}}
@@ -15,12 +18,32 @@
       <td>{{this._id}}</td>
       <td>{{this.title}}</td>
       <td>{{this.description}}</td>
+      <td>{{this.category}}</td>
       <td>{{this.price}}</td>
       <td>{{this.thumbnail}}</td>
       <td>{{this.code}}</td>
       <td>{{this.stock}}</td>
+      <td><button><a href="http://localhost:8080/products/{{this._id}}">Ver detalles</a></button></td>
+      <td><button>Agregar al carrito</button></td>
     </tr>
     {{/each}}
   </tbody>
 
 </table>
+
+<div>
+  <p>Página {{page}}</p>
+  {{#if hasPrevPage}}
+  <button> <a href="{{prevLink}}"> << </a> </button>
+  {{else}}
+  <button disabled> << </button>
+  {{/if}}
+
+  {{#if hasNextPage}}
+  <button> <a href="{{nextLink}}"> >> </a> </button>
+  {{else}}
+  <button disabled> >> </button>
+  {{/if}}
+</div>
+
+<script src="js/{{script}}.js"></script>
