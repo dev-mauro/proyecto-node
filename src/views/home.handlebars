@@ -1,4 +1,14 @@
 <h1>Productos</h1>
+
+{{#if user}}
+  <div class="user-card">
+    <h3>¡Bienvenido {{user.first_name}}!</h3>
+    <p>Nombre: {{user.first_name}} {{user.last_name}}</p>
+    <p>Correo electrónico: {{user.email}}</p>
+    <p>Rol: {{user.role}}</p>
+  </div>
+{{/if}}
+
 <table>
   <thead>
     <th>ID</th>

@@ -22,3 +22,10 @@ tr:hover {
   background-color: #badef8;
   cursor: pointer;
 }
+
+.user-card {
+  border: 1px solid black;
+  padding: 3px 15px;
+  width: 300px;
+  margin-bottom: 20px;
+}

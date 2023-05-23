@@ -2,9 +2,12 @@ import express from "express";
 import handlebars from 'express-handlebars'
 import mongoose from "mongoose";
 import { Server } from "socket.io";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 
 import productRouter from "./routes/products.router.js";
 import cartRouter from "./routes/carts.router.js";
+import sessionRouter from "./routes/session.router.js"
 import viewRouter from "./routes/views.router.js";
 import chatRouter from "./routes/chat.router.js";
 import __dirname from "./utils.js";
@@ -22,6 +25,20 @@ app.engine( 'handlebars', handlebars.engine() );
 app.set( 'view engine', 'handlebars' );
 app.set( 'views', __dirname + '/views' );
 
+// Session config
+app.use( session({
+  store: MongoStore.create({
+    mongoUrl: "mongodb+srv://silvac:contrasena123@cluster0.bmoglka.mongodb.net/ecommerce",
+    mongoOptions: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  }),
+  secret: 'YI5TMPfz',
+  resave: false,
+  saveUninitialized: false,
+}));
+
 // Mongoose connect
 mongoose.connect("mongodb+srv://silvac:contrasena123@cluster0.bmoglka.mongodb.net/ecommerce?retryWrites=true&w=majority");
 
@@ -36,5 +53,6 @@ app.set('io', socketServerIO);
 // Server router
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
+app.use('/api/sessions', sessionRouter);
 app.use('/chat', chatRouter);
 app.use('/', viewRouter );
