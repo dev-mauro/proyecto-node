@@ -14,12 +14,16 @@ loginForm.addEventListener('submit', (e) => {
     
     fetch('/api/sessions/login', {
       method: 'POST',
-      body: JSON.stringify({ user }),
+      body: JSON.stringify(user),
       headers: {
         'Content-Type': 'application/json'
       }
     })
-    .then( res => (res.status == 200) ? window.location.replace('/products') : '');
+    .then( res => {
+      if (res.status == 200) window.location.replace('/products');
+      else if( res.status == 401 ) console.log('invalid credentials');
+      else console.log('server error');
+    });
 
   } catch(err) {
     console.log(err.message)

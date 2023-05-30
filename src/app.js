@@ -4,13 +4,16 @@ import mongoose from "mongoose";
 import { Server } from "socket.io";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import passport from "passport";
 
 import productRouter from "./routes/products.router.js";
 import cartRouter from "./routes/carts.router.js";
 import sessionRouter from "./routes/session.router.js"
 import viewRouter from "./routes/views.router.js";
 import chatRouter from "./routes/chat.router.js";
+
 import __dirname from "./utils.js";
+import initializePassport from "./config/passport.config.js"
 
 const app = express();
 const PORT = 8080;
@@ -38,6 +41,11 @@ app.use( session({
   resave: false,
   saveUninitialized: false,
 }));
+
+// Passport config
+initializePassport();
+app.use( passport.initialize() );
+app.use( passport.session() );
 
 // Mongoose connect
 mongoose.connect("mongodb+srv://silvac:contrasena123@cluster0.bmoglka.mongodb.net/ecommerce?retryWrites=true&w=majority");

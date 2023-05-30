@@ -2,87 +2,54 @@ import { Router } from "express";
 
 import userModel from "../Dao/models/user.model.js";
 import { getUserRole } from "../helpers/getUserRole.js"
+import passport from "passport";
 
 const router = Router();
 
-router.post('/register', async(req, res) => {
-  const { user } = req.body;
-
-  try {
-    const userExist = await userModel.findOne({ email: user.email });
-    if(userExist) res.status(409).send({
-      status: 'error',
-      message: 'user already exist',
-    })
-
-    const role = getUserRole(user);
-    const newUser = await userModel.create( {...user, role} );
-
-    const sessionUser = {
-      first_name: newUser.first_name,
-      last_name: newUser.last_name,
-      email: newUser.email,
-      role: newUser.role,
-    }
-
-    req.session.user = sessionUser;
-
+router.post('/register', passport.authenticate('register',
+  { failureRedirect: '/api/sessions/failregister' }
+  ),
+  async (req, res) => {
     res.status(201).send({
       status: 'success',
-      payload: sessionUser,
-    });
-
-  } catch(err) {
-    console.log(err.message);
-    res.send({
-      status: 'error',
-      message: err.message,
+      message: 'user registered successfully',
     });
   }
+);
+
+router.get('/failregister', async(req, res) => {
+  res.status(400).send({
+    status: 'Error',
+    message: 'There was an error during account registration.',
+  });
+
 });
 
-router.post('/login', async(req, res) => {
-  const { user } = req.body;
+router.post('/login', passport.authenticate('login',
+  { failureRedirect: '/api/sessions/faillogin' }
+  ),
+  async(req, res) => {
+    const { user } = req;
 
-  try {
-    const requestedUser = await userModel.findOne({email: user.email});
-
-    if(!requestedUser) {
-      return res.status(401).send({
-        status: 'error',
-        message: 'user not found'
-      })
+    req.session.user = {
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      role: user.role,
     }
-
-    if(requestedUser.password !== user.password)
-      return res.status(401).send({
-        status: 'error',
-        message: 'wrong password'
-      })  
-      
-    const sessionUser = {
-      first_name: requestedUser.first_name,
-      last_name: requestedUser.last_name,
-      email: requestedUser.email,
-      role: requestedUser.role,
-    }
-
-    req.session.user = sessionUser;
 
     res.send({
       status: 'success',
-      payload: sessionUser,
-    });
-
-  } catch(err) {
-
-    res.status(400).send({
-      status: 'error',
-      message: err.message,
+      payload: req.session.user,
     })
+  }
+);
 
-  } 
-
+router.get('/faillogin', async(req, res) => {
+  res.status(401).send({
+    status: 'Error',
+    message: 'Invalid credentials'
+  })
 });
 
 router.delete('/logout', async(req, res) => {
@@ -92,5 +59,16 @@ router.delete('/logout', async(req, res) => {
     message: 'logout success',
   }); 
 });
+
+router.get('/github', passport.authenticate('github', {scope: ['user:email']},
+  async(req, res) => {}
+));
+
+router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}),
+  async (req, res) => {
+    req.session.user = req.user;
+    res.redirect('/products');
+  }
+)
 
 export default router;

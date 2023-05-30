@@ -19,12 +19,17 @@ registerForm.addEventListener('submit', (e) => {
     
     fetch('/api/sessions/register', {
       method: 'POST',
-      body: JSON.stringify({ user }),
+      body: JSON.stringify(user),
       headers: {
         'Content-Type': 'application/json'
       }
     })
-    .then( res => res.status == 201 ? window.location.replace('/products') : '');
+    .then( res => {
+      if( res.status == 201) window.location.replace('/login');
+      else if ( res.status == 400 ) console.log('Registration error');
+      else return res.json();
+    })
+    .then( json => console.log(json) )
 
   } catch(err) {
     console.log(err.message)
