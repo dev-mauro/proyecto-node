@@ -35,6 +35,8 @@ router.post('/login', passport.authenticate('login',
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
+      age: user.age,
+      cart: user.cart,
       role: user.role,
     }
 

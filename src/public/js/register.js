@@ -3,7 +3,7 @@ const firstNameInput = document.querySelector('#firstName');
 const lastNameInput = document.querySelector('#lastName');
 const passwordInput = document.querySelector('#password');
 const emailInput = document.querySelector('#email');
-
+const ageInput = document.querySelector('#age');
 
 registerForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -13,6 +13,7 @@ registerForm.addEventListener('submit', (e) => {
     last_name: lastNameInput.value,
     email: emailInput.value,
     password: passwordInput.value,
+    age: ageInput.value,
   }
 
   try {

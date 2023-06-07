@@ -96,4 +96,15 @@ router.get('/profile', privateRoute, (req, res) => {
   });
 });
 
+router.get('/current', (req, res) => {
+  const { user } = req.session;
+
+  if( !user ) return res.status(401).send({status: 'error', message: 'not authenticated'});
+
+  res.send({
+    status: 'success',
+    payload: req.session.user,
+  })
+})
+
 export default router;

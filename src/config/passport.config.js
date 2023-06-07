@@ -17,7 +17,7 @@ const initializePassport = () => {
       usernameField: 'email'
     },
     async (req, username, password, done) => {
-      const { first_name, last_name } = req.body;
+      const { first_name, last_name, age } = req.body;
       try {
 
         const user = await userModel.findOne({ email: username });
@@ -30,6 +30,8 @@ const initializePassport = () => {
         const newUser = {
           first_name,
           last_name,
+          age,
+          cart: null,
           email: username,
           password: createHash( password ),
         }
@@ -88,13 +90,12 @@ const initializePassport = () => {
         const newUser = {
           first_name: profile._json.name,
           last_name: '',
+          age: 0,
+          cart: null,
           email: profile._json.login,
           password: '',
         }
         newUser.role = getUserRole( newUser );
-
-        console.log(newUser)
-        console.log(profile._json)
 
         const result = await userModel.create( newUser );
         done(null, result);
