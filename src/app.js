@@ -14,9 +14,9 @@ import chatRouter from "./routes/chat.router.js";
 
 import __dirname from "./utils.js";
 import initializePassport from "./config/passport.config.js"
+import { PORT, mongoURL, secret } from "./config/config.js";
 
 const app = express();
-const PORT = 8080;
 
 // Server config
 app.use( express.json() );
@@ -31,13 +31,13 @@ app.set( 'views', __dirname + '/views' );
 // Session config
 app.use( session({
   store: MongoStore.create({
-    mongoUrl: "mongodb+srv://silvac:contrasena123@cluster0.bmoglka.mongodb.net/ecommerce",
+    mongoUrl: mongoURL,
     mongoOptions: {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }
   }),
-  secret: 'YI5TMPfz',
+  secret,
   resave: false,
   saveUninitialized: false,
 }));
@@ -48,7 +48,7 @@ app.use( passport.initialize() );
 app.use( passport.session() );
 
 // Mongoose connect
-mongoose.connect("mongodb+srv://silvac:contrasena123@cluster0.bmoglka.mongodb.net/ecommerce?retryWrites=true&w=majority");
+mongoose.connect(mongoURL);
 
 const server = app.listen( PORT, ( ) => {
   console.log(`Listening at PORT ${ PORT } - http://localhost:${PORT}`);
