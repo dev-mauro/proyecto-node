@@ -1,16 +1,21 @@
 import { Router } from "express";
 
-import ProductManagerMongo from "../Dao/managers/ProductManagerMongo.js";
-import CartManagerMongo from "../Dao/managers/CartManagerMongo.js";
+import { productDao, cartDao } from "../Dao/factory.js";
 import { getProductLink } from "../helpers/getProductLink.js";
 import { publicRoute, privateRoute } from "../middlewares/auth.middleware.js";
 
 const router = Router();
-const productManager = new ProductManagerMongo();
-const cartManager = new CartManagerMongo();
 
 router.get( '/products', async(req, res) => {
-  const response = await productManager.getProducts( req.query );
+  const response = await productDao.getProducts( req.query );
+
+  if( !response.payload ){
+    return res.render('home', {
+     products: response,
+     style: 'home',
+   });
+  }
+
   const products = response.payload.map( product => product.toObject());
   const baseURL = 'http://localhost:8080/products';
   const { user } = req.session;
@@ -36,7 +41,7 @@ router.get( '/products', async(req, res) => {
 });
 
 router.get( '/realtimeproducts', async(req, res) => {
-  const response = await productManager.getProducts();
+  const response = await productDao.getProducts();
   const products = response.payload.map( product => product.toObject());
 
   res.render('realTimeProducts', {
@@ -49,7 +54,7 @@ router.get( '/realtimeproducts', async(req, res) => {
 
 router.get('/products/:id', async(req, res) => {
   const { id } = req.params;
-  const product = await productManager.getProductById(id);
+  const product = await productDao.getProductById(id);
 
   res.render('productDetail', {
     product: product.toObject(),
@@ -58,7 +63,7 @@ router.get('/products/:id', async(req, res) => {
 
 router.get('/carts/:cid', async(req, res) => {
   const { cid } = req.params;
-  const response = await cartManager.getCartById(cid);
+  const response = await cartDao.getCartById(cid);
 
   console.log(response)
 

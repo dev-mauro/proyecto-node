@@ -35,8 +35,6 @@ class ProductManagerMongo {
 
   // Ingresa un nuevo producto
   async addProduct( newProduct ) {
-    newProduct.status = newProduct.status ?? true;
-    newProduct.thumbnails = newProduct.thumbnails || [];
     const result = await productModel.create( newProduct );
     return result;
   }
@@ -72,4 +70,4 @@ const getOrder = ( sort ) => {
   return order;
 }
 
-export default ProductManagerMongo;
+export { ProductManagerMongo };

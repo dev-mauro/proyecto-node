@@ -1,4 +1,7 @@
 import cartService from "../services/cart.service.js";
+import productService from "../services/product.service.js";
+import userModel from "../Dao/models/user.model.js";
+import ticketService from "../services/ticket.service.js";
 
 class CartController {
 
@@ -159,6 +162,67 @@ class CartController {
         message: error.message
       });
     }
+  }
+
+  // Finaliza la compra de un carrito
+  purchase = async(req, res) => {
+    let amount = 0;
+    const unavailableProducts = [];
+
+    // Se obtiene el carrito
+    const { cid } = req.params;
+    const cart = await cartService.getCartById( cid );
+
+    // Si no existe el carrito indicado
+    if( !cart )
+      return res.status(400).send({
+        status: 'error',
+        message: 'cart does not exist'
+      });
+
+    // Se obtienen los productos del carrito
+    const { products } = cart;
+
+    // Si el carrito no tiene productos
+    if( products.length == 0)
+      return res.status(400).send({
+        status: 'error',
+        message: 'cart is empty'
+      });
+
+    // Se obtiene la información completa de los productos
+    // product = id del producto, quantity = cantidad del producto
+    const fullInfoProducts = products.map( async({product, quantity}) => {
+      const searchedProduct = await productService.getProductById( product );
+      searchedProduct.quantity = quantity;
+      return searchedProduct;
+    });
+
+    // Se verifica que haya stock suficiente para cada producto
+    fullInfoProducts.forEach( async( product ) => {
+      // Si hay, sumar el precio y restar stock
+      if( product.stock >= product.quantity ) {
+        amount += product.price * product.quantity;
+        await productService.updateProduct( product._id, {stock: stock - quantity} );
+      } 
+      else
+        unavailableProducts.push(product);
+    });
+
+    // Se obtiene el email del dueño del carrito
+    const { email } = await userModel.find({cart: cid});
+
+    // Se genera el ticket de compra
+    const ticket = await ticketService.addTicket( amount, email);
+
+    res.send({
+      status: 'success',
+      payload: {
+        unavailableProducts,
+        ticket
+      }
+    });
+
   }
 }
 

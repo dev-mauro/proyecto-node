@@ -10,18 +10,33 @@ const environments = {
   'prod': `${__dirname}/.env.prod`
 }
 
+// Definición de persistencias disponibles
+const availablePersistences = ['file', 'mongo']
+
 // Configuración de parámetros
 const program = new Command();
-program
-  .addOption( new Option('-m, --mode <mode>', 'modo de ejecución')
+
+// opción de modo de ejecución
+program.addOption( 
+  new Option('-m, --mode <mode>', 'modo de ejecución')
   .default('dev')
-  .choices( Object.keys(environments) ));
+  .choices( Object.keys(environments) ) 
+);
+  
+// opción de persistencia de aplicacion
+program.addOption( 
+  new Option('-p, --persistence <persistence>', 'persistencia usada')
+  .default('mongo')
+  .choices( availablePersistences )
+);
 
 program.parse();
 
 // Se obtiene el modo de los parámetros
 const currentEnv = program.opts().mode;
 
+// Se obtiene la persistencia a utilizar de los parámetros
+const persistence = program.opts().persistence;
 
 // Se setea el entorno actual
 dotenv.config({
@@ -34,4 +49,4 @@ const {
   SECRET: secret,
 } = process.env;
 
-export { PORT, mongoURL, secret }
+export { PORT, mongoURL, secret, persistence }

@@ -47,8 +47,6 @@ initializePassport();
 app.use( passport.initialize() );
 app.use( passport.session() );
 
-// Mongoose connect
-mongoose.connect(mongoURL);
 
 const server = app.listen( PORT, ( ) => {
   console.log(`Listening at PORT ${ PORT } - http://localhost:${PORT}`);

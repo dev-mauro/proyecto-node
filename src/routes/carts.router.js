@@ -1,10 +1,8 @@
 import { Router } from "express";
 
-import cartManagerMongo from "../Dao/managers/CartManagerMongo.js";
 import cartController from '../controllers/cart.controller.js'
 
 const router = Router();
-const cartManager = new cartManagerMongo();
 
 // Retorna todos los carritos
 router.get('/', cartController.getCarts);
@@ -29,5 +27,8 @@ router.put('/:cid/product/:pid', cartController.updateProductQuantity);
 
 // Elimina todos los productos del carrito con el cid especificado
 router.delete('/:cid', cartController.clearCart);
+
+// Finaliza la compra de un carrito
+router.post('/:cid/purchase', cartController.purchase);
 
 export default router;

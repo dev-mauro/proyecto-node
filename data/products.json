@@ -42,5 +42,16 @@
 		"category": "galletas",
 		"thumbnails": [],
 		"id": 3
+	},
+	{
+		"title": "galletas chocolate",
+		"description": "libre de azucar",
+		"code": "4Z",
+		"price": 80,
+		"status": false,
+		"stock": 20,
+		"category": "galletas",
+		"thumbnails": [],
+		"id": 4
 	}
 ]

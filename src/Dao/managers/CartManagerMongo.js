@@ -2,7 +2,7 @@ import cartModel from "../models/cart.model.js";
 
 import { checkProduct } from "../../helpers/checkProduct.js";
 
-class cartModelMongo {
+class CartManagerMongo {
 
   // Inserta un nuevo carrito
   async addCart() {
@@ -116,4 +116,4 @@ class cartModelMongo {
 
 }
 
-export default cartModelMongo;
+export { CartManagerMongo };
