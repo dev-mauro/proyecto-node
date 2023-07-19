@@ -11,6 +11,7 @@ import cartRouter from "./routes/carts.router.js";
 import sessionRouter from "./routes/session.router.js"
 import viewRouter from "./routes/views.router.js";
 import chatRouter from "./routes/chat.router.js";
+import mockingRouter from "./routes/mocking.router.js"
 
 import __dirname from "./utils.js";
 import initializePassport from "./config/passport.config.js"
@@ -62,3 +63,4 @@ app.use('/api/carts', cartRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/chat', chatRouter);
 app.use('/', viewRouter );
+app.use('/mocking', mockingRouter );
