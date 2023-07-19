@@ -16,6 +16,7 @@ import mockingRouter from "./routes/mocking.router.js"
 import __dirname from "./utils.js";
 import initializePassport from "./config/passport.config.js"
 import { PORT, mongoURL, secret } from "./config/config.js";
+import errorHandler from "./middlewares/errorHandler.middleware.js";
 
 const app = express();
 
@@ -64,3 +65,4 @@ app.use('/api/sessions', sessionRouter);
 app.use('/chat', chatRouter);
 app.use('/', viewRouter );
 app.use('/mocking', mockingRouter );
+app.use(errorHandler);

@@ -2,6 +2,10 @@ import productService from '../services/product.service.js'
 import { emitChangeInProducts } from "../helpers/emitChangeInProducts.js";
 import { getProductLink } from "../helpers/getProductLink.js";
 
+import {generateProductIDError, generateAddProductError} from "../errors/productErrorCauseGenerator.js"; 
+import CustomError from '../errors/CustomError.js';
+import EErrors from '../errors/EErrors.js';
+
 class ProductController {
 
   // Lista todos los productos. Acepta ?limit query.
@@ -26,6 +30,15 @@ class ProductController {
   getProductById = async(req, res) => {
     const { pid } = req.params;
   
+    if(pid == null) {
+      CustomError.createError({
+        name: "Product ID Error",
+        cause: generateProductIDError(pid),
+        message: "There is no product ID in the request.",
+        code: EErrors.PRODUCT_ID_NOT_VALID,
+      });
+    }
+
     try {
   
       const requestedProduct = await productService.getProductById( pid );
@@ -44,7 +57,16 @@ class ProductController {
   // Agrega un producto a la base de datos
   addProduct = async(req, res) => {
     const newProduct = req.body;
-  
+
+    if(!newProduct.title || !newProduct.price || !newProduct.description || !newProduct.code || !newProduct.stock || !newProduct.category) {
+      CustomError.createError({
+        name: "Add Product Error",
+        cause: generateAddProductError(newProduct),
+        message: "Sent product is not valid.",
+        code: EErrors.PRODUCT_NOT_VALID,
+      });
+    }
+
     try {
       const result = await productService.addProduct( newProduct );
   
