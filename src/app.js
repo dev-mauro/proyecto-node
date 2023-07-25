@@ -12,11 +12,13 @@ import sessionRouter from "./routes/session.router.js"
 import viewRouter from "./routes/views.router.js";
 import chatRouter from "./routes/chat.router.js";
 import mockingRouter from "./routes/mocking.router.js"
+import loggerRouter from "./routes/logger.router.js";
 
 import __dirname from "./utils.js";
 import initializePassport from "./config/passport.config.js"
 import { PORT, mongoURL, secret } from "./config/config.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
+import { addLogger } from "./middlewares/winston.middleware.js";
 
 const app = express();
 
@@ -59,10 +61,12 @@ const socketServerIO = new Server( server );
 app.set('io', socketServerIO);
 
 // Server router
+app.use(addLogger);
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/chat', chatRouter);
 app.use('/', viewRouter );
 app.use('/mocking', mockingRouter );
+app.use('/loggertest', loggerRouter);
 app.use(errorHandler);

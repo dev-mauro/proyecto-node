@@ -30,7 +30,7 @@ class CartController {
       });
 
     } catch(error) {
-
+      req.logger.error( error.message );
       res.status(400).send({
         "status": "not found",
         "message": error.message
@@ -51,7 +51,7 @@ class CartController {
       });
   
     } catch(error) {
-  
+      req.logger.error( error.message );
       res.status(400).send({
         "status": "bad request",
         "message": error.message
@@ -75,7 +75,7 @@ class CartController {
       });
   
     } catch(error) {
-  
+      req.logger.error( error.message );
       res.send({
         "status": "bad request",
         "message": error.message
@@ -96,6 +96,7 @@ class CartController {
         payload: response,
       });
     } catch(err) {
+      req.logger.error( error.message );
       res.status(400).send({
         status: 'error',
         message: err.message
@@ -118,7 +119,7 @@ class CartController {
       });
   
     } catch(error) {
-  
+      req.logger.error( error.message );
       res.send({
         "status": "error",
         "message": error.message
@@ -139,6 +140,7 @@ class CartController {
         payload: response,
       });
     } catch(error) {
+      req.logger.error( error.message );
       res.status(400).send({
         status: 'error',
         message: error.message
@@ -157,6 +159,7 @@ class CartController {
         payload: response,
       });
     } catch(error) {
+      req.logger.error( error.message );
       res.status(400).send({
         status: 'error',
         message: error.message
@@ -174,21 +177,25 @@ class CartController {
     const cart = await cartService.getCartById( cid );
 
     // Si no existe el carrito indicado
-    if( !cart )
+    if( !cart ){
+      req.logger.error( error.message );
       return res.status(400).send({
         status: 'error',
         message: 'cart does not exist'
       });
+    }
 
     // Se obtienen los productos del carrito
     const { products } = cart;
 
     // Si el carrito no tiene productos
-    if( products.length == 0)
+    if( products.length == 0) {
+      req.logger.error( error.message );
       return res.status(400).send({
         status: 'error',
         message: 'cart is empty'
       });
+    }
 
     // Se obtiene la información completa de los productos
     // product = id del producto, quantity = cantidad del producto

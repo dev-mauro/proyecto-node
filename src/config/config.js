@@ -49,4 +49,4 @@ const {
   SECRET: secret,
 } = process.env;
 
-export { PORT, mongoURL, secret, persistence }
+export { PORT, mongoURL, secret, persistence, currentEnv }

@@ -45,7 +45,7 @@ class ProductController {
       res.send( {product: requestedProduct} );
   
     } catch( error ) {
-  
+      req.logger.error( error.message );
       res.status(400).send({
         "status": "not-found",
         "message": error.message
@@ -78,10 +78,10 @@ class ProductController {
       emitChangeInProducts( req );
   
     } catch (error) {
+      req.logger.error( error.message );
       res.status(400).send({
         "status": "bad request",
         "message": error.message
-  
       });
     }
   }
@@ -105,6 +105,7 @@ class ProductController {
       emitChangeInProducts( req );
   
     } catch(error) {
+      req.logger.error( error.message );
       res.status(400).send({
         "status": "bad request",
         "message": error.message
@@ -127,6 +128,7 @@ class ProductController {
       emitChangeInProducts( req );
   
     } catch(error) {
+      req.logger.error( error.message );
       res.send({
         "status": "not found",
         "message": error.message
