@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import productController from '../controllers/products.controller.js'
+import { premiumRoute } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -14,9 +15,9 @@ router.get('/:pid', productController.getProductById);
 router.post('/', productController.addProduct);
 
 // Actualiza un producto de la base de datos
-router.put('/:pid', productController.updateProduct);
+router.put('/:pid', premiumRoute, productController.updateProduct);
 
 // Elimina un producto de la base de datos
-router.delete('/:pid', productController.deleteProduct);
+router.delete('/:pid', premiumRoute, productController.deleteProduct);
 
 export default router;

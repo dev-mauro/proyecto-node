@@ -5,6 +5,7 @@ import { getProductLink } from "../helpers/getProductLink.js";
 import {generateProductIDError, generateAddProductError} from "../errors/productErrorCauseGenerator.js"; 
 import CustomError from '../errors/CustomError.js';
 import EErrors from '../errors/EErrors.js';
+import userModel from '../Dao/models/user.model.js';
 
 class ProductController {
 
@@ -57,6 +58,7 @@ class ProductController {
   // Agrega un producto a la base de datos
   addProduct = async(req, res) => {
     const newProduct = req.body;
+    const { role, email } = req.session.user;
 
     if(!newProduct.title || !newProduct.price || !newProduct.description || !newProduct.code || !newProduct.stock || !newProduct.category) {
       CustomError.createError({
@@ -66,6 +68,9 @@ class ProductController {
         code: EErrors.PRODUCT_NOT_VALID,
       });
     }
+
+    if( role === 'premium' )
+      newProduct.owner = email;
 
     try {
       const result = await productService.addProduct( newProduct );
@@ -90,9 +95,20 @@ class ProductController {
   updateProduct = async(req, res) => {
     const productUpdate = req.body;
     const { pid } = req.params;
-  
+    const { role, email } = req.session.user;
+
     try {
   
+      // Se verifica que el usuario sea el dueño del producto
+      if( role === 'premium' ) {
+        const { owner } = await productService.getProductById( pid );
+        if( owner != email )
+          return res.status(401).send({
+            "status": "error",
+            "message": "You are not authorized to perform this action."
+          });
+      }
+
       const result = await productService.updateProduct(pid, productUpdate);
       res.send({
         "status": "success",
@@ -116,9 +132,20 @@ class ProductController {
   // Elimina un producto de la base de datos
   deleteProduct = async(req, res) => {
     const { pid } = req.params;
-  
+    const { role, email } = req.session.user;
+
     try {
   
+      // Se verifica que el usuario sea el dueño del producto
+      if( role === 'premium' ) {
+        const { owner } = await productService.getProductById( pid );
+        if( owner != email )
+          return res.status(401).send({
+            "status": "error",
+            "message": "You are not authorized to perform this action."
+          });
+      }
+
       const result = await productService.deleteProduct( pid );
       res.send({
         "status": "success",

@@ -2,6 +2,8 @@ import crypto from 'crypto';
 
 import userModel from "../Dao/models/user.model.js";
 import { createHash, isValidPassword } from '../utils.js';
+import { recoverPasswordHTML } from '../helpers/emailBody.js';
+import { transporter } from '../config/gmail.config.js';
 
 class SessionController {
 
@@ -80,6 +82,18 @@ class SessionController {
     user.expireToken = resetTokenExpiration;
     await user.save();
 
+    console.log(`http://localhost:8080/resetpassword/${resetToken}`)
+
+    /*
+    const mailOptions = {
+      from: 'proyecto-node',
+      to: user.email,
+      subject: 'Recuperar contraseña',
+      html: recoverPasswordHTML( token ),
+    }
+    await transporter.sendMain( mailOptions );
+    */
+
     res.send({
       status: 'success',
       message: 'Check your email to reset your password',
@@ -122,6 +136,35 @@ class SessionController {
       status: 'success',
       message: 'Password reset successfully',
     })
+
+  }
+
+  // Cambia el rol de un usuario de 'premium' a 'user' y viceversa
+  togglePremium = async( req, res ) => {
+    const { uid } = req.params;
+
+    try {
+      const user = await userModel.findById( uid );
+
+      if( !user )
+        return res.status(404).send({
+          status: 'error',
+          message: 'User not found',
+        });
+
+      user.role = user.role == 'premium' ? 'user' : 'premium';
+      await user.save();
+
+      res.send({
+        status: 'success',
+        message: 'User role updated successfully',
+      });
+    } catch( error ) {
+      res.status(400).send({
+        status: 'error',
+        message: error.message,
+      });
+    }
 
   }
 

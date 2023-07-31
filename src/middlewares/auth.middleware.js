@@ -10,7 +10,33 @@ const publicRoute = (req, res, next) => {
   else next();
 };
 
+// Impide el acceso a usuarios no administradores
+const adminRoute = (req, res, next) => {
+  const { role } = req.session.user;
+  if( role != 'admin' )
+    return res.status(401).send({
+      "status": "error",
+      "message": "You are not authorized to perform this action."
+    });
+
+  else next();
+}
+
+// Impide el acceso a usuarios no premium o administradores 
+const premiumRoute = (req, res, next) => {
+  const { role } = req.session?.user;
+  if( role != 'premium' && role != 'admin' )
+    return res.status(401).send({
+      "status": "error",
+      "message": "You are not authorized to perform this action."
+    });
+
+  else next();
+}
+
 export {
   privateRoute,
   publicRoute,
+  adminRoute,
+  premiumRoute,
 }

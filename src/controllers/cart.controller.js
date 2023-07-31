@@ -64,9 +64,20 @@ class CartController {
   addProductToCart = async(req, res) => {
     const { cid, pid } = req.params;
     const { quantity = 1 } = req.body;
+
+    const { role, email } = req.session.user;
   
     try {
   
+      if( role === 'premium' ) {
+        const { owner } = await productService.getProductById( pid );
+        if( owner == email )
+          return res.status(400).send({
+            "status": "error",
+            "message": "You can't add your own product to your cart"
+          });
+      }
+
       const modifiedCart = await cartService.addProductToCart(cid, pid, quantity);
   
       res.send({
