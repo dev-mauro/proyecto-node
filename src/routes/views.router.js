@@ -112,4 +112,20 @@ router.get('/current', (req, res) => {
   })
 })
 
+router.get('/forgotpassword', (req, res) => {
+  res.render('forgotpassword', {
+    script: 'forgotpassword',
+  });
+})
+
+router.get('/resetpassword/:token', (req, res) => {
+  const { token } = req.params;
+
+  res.render('resetpassword', {
+    script: 'resetpassword',
+    token,
+  });
+});
+
+
 export default router;

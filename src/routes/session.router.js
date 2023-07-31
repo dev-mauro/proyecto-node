@@ -31,4 +31,7 @@ router.get('/githubcallback', passport.authenticate('github', {failureRedirect: 
   sessionController.successGithubLogin
 )
 
+router.post('/resetpassword/:token', sessionController.resetPassword);
+router.post('/forgotpassword', sessionController.forgotPassword);
+
 export default router;

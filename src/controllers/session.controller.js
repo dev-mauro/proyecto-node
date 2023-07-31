@@ -1,3 +1,8 @@
+import crypto from 'crypto';
+
+import userModel from "../Dao/models/user.model.js";
+import { createHash, isValidPassword } from '../utils.js';
+
 class SessionController {
 
   // Registro de nuevo usuario exitoso
@@ -57,6 +62,69 @@ class SessionController {
     req.session.user = req.user;
     res.redirect('/products');
   }
+
+  forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if( !user ) return res.status(404).send({
+      status: 'error',
+      message: 'User not found',
+    });
+
+    const resetToken = await crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiration = Date.now() + 3600000;
+
+    user.resetToken = resetToken;
+    user.expireToken = resetTokenExpiration;
+    await user.save();
+
+    res.send({
+      status: 'success',
+      message: 'Check your email to reset your password',
+    });
+
+  }
+
+  resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const user = await userModel.findOne({ resetToken: token });
+
+    // El enlace para resetear la contraseña no es válido
+    if( !user ) res.status(404).send({
+      status: 'error',
+      message: 'Reset password request not found',
+    });
+
+    // El enlace para resetear la contraseña ha expirado
+    if( user.expireToken < Date.now() ) res.status(401).send({
+      status: 'error',
+      message: 'Reset password request expired',
+    });
+
+    // Si la contraseña es la misma a al actual
+    if( isValidPassword( user, password ) ){
+      return res.status(400).send({
+        status: 'error',
+        message: 'New password must be different from the old one',
+      });
+    }
+
+    user.password = createHash( password );
+    user.resetToken = undefined;
+    user.expireToken = undefined;
+    await user.save();
+
+    res.send({
+      status: 'success',
+      message: 'Password reset successfully',
+    })
+
+  }
+
 }
 
 export default new SessionController();
