@@ -31,7 +31,7 @@ class CartController {
 
     } catch(error) {
       req.logger.error( error.message );
-      res.status(400).send({
+      res.status(404).send({
         "status": "not found",
         "message": error.message
       });
@@ -87,7 +87,7 @@ class CartController {
   
     } catch(error) {
       req.logger.error( error.message );
-      res.send({
+      res.status(404).send({
         "status": "bad request",
         "message": error.message
       });
@@ -108,7 +108,7 @@ class CartController {
       });
     } catch(err) {
       req.logger.error( error.message );
-      res.status(400).send({
+      res.status(404).send({
         status: 'error',
         message: err.message
       });
@@ -131,7 +131,7 @@ class CartController {
   
     } catch(error) {
       req.logger.error( error.message );
-      res.send({
+      res.status(404).send({
         "status": "error",
         "message": error.message
       });
@@ -152,7 +152,7 @@ class CartController {
       });
     } catch(error) {
       req.logger.error( error.message );
-      res.status(400).send({
+      res.status(404).send({
         status: 'error',
         message: error.message
       });
@@ -171,7 +171,7 @@ class CartController {
       });
     } catch(error) {
       req.logger.error( error.message );
-      res.status(400).send({
+      res.status(404).send({
         status: 'error',
         message: error.message
       });
@@ -190,7 +190,7 @@ class CartController {
     // Si no existe el carrito indicado
     if( !cart ){
       req.logger.error( error.message );
-      return res.status(400).send({
+      return res.status(404).send({
         status: 'error',
         message: 'cart does not exist'
       });

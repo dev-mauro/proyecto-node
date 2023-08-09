@@ -47,7 +47,7 @@ class ProductController {
   
     } catch( error ) {
       req.logger.error( error.message );
-      res.status(400).send({
+      res.status(404).send({
         "status": "not-found",
         "message": error.message
       });
@@ -122,7 +122,7 @@ class ProductController {
   
     } catch(error) {
       req.logger.error( error.message );
-      res.status(400).send({
+      res.status(404).send({
         "status": "bad request",
         "message": error.message
       });
@@ -156,7 +156,7 @@ class ProductController {
   
     } catch(error) {
       req.logger.error( error.message );
-      res.send({
+      res.status(404).send({
         "status": "not found",
         "message": error.message
       });

@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
+import swaggerUiExpress from 'swagger-ui-express';
 
 import productRouter from "./routes/products.router.js";
 import cartRouter from "./routes/carts.router.js";
@@ -19,6 +20,7 @@ import initializePassport from "./config/passport.config.js"
 import { PORT, mongoURL, secret } from "./config/config.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
 import { addLogger } from "./middlewares/winston.middleware.js";
+import { swaggerSpecs } from './config/doc.config.js';
 
 const app = express();
 
@@ -70,3 +72,4 @@ app.use('/', viewRouter );
 app.use('/mocking', mockingRouter );
 app.use('/loggertest', loggerRouter);
 app.use(errorHandler);
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup( swaggerSpecs ));

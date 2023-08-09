@@ -1,0 +1,238 @@
+paths:
+  /api/products/:
+    get:
+      summary: Lista todos los productos. Acepta limit, page, sort, category y status queryParam.
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Los productos se obtuvieron satisfactoriamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#components/schemas/Product'
+    post:
+      summary: Agrega el producto enviado en el body a la base de datos
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/newProduct'
+      responses:
+        "200":
+          description: El producto se agrego correctamente
+        "400":
+          description: El producto no se pudo agregar debido a que su estructura no es valida.
+
+  /api/products/{pid}:
+    get:
+      summary: Lista el producto con el pID enviado
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: id el producto requerido
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Se encuentra satisfactoriamente el producto indicado
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/Product'
+        "404":
+          description: No se encontro producto con el pid indicado
+    put:
+      summary: Actualiza el producto con el pID enviado
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: id el producto a actualizar
+        schema:
+          $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/requestBodies/updateProduct'
+      responses:
+        "200":
+          description: El producto se actualizo satisfactoriamente
+        "401":
+          description: No estas autorizado para realizar la accion. Ocurre en caso de que no seas propietario del producto o admin
+        "404":
+          description: No se encontro el producto con el pID indicado
+    delete:
+      summary: Elimina el producto con el pID enviado
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: id el producto a eliminar
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: El producto se elimino satisfactoriamente
+        "401":
+          description: No estas autorizado para realizar la accion. Ocurre en caso de que no seas propietario del producto o admin
+        "404":
+          description: No se encontro el producto con el pID indicado
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID autogenerado por mongoDB
+        title:
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripcion del producto
+        price:
+          type: Number
+          description: Precio del producto
+        thumbnails:
+          type: Array
+          description: Array con las URL de los thumbnails
+          items:
+            type: String
+        code:
+          type: String
+          description: Codigo de producto
+        stock:
+          type: Number
+          description: Stock disponible del producto
+        status:
+          type: Boolean
+          description: Estado del producto en la tienda
+        category:
+          type: String
+          description: Categoria del producto
+        owner:
+          type: String
+          description: email que identifica al propietario del producto. En caso de no existir propietario su valor es 'admin'
+      example:
+        _id: ObjectId("2723477ASDAF3")
+        title: Galletas Cariocas
+        description: Galletas de chocolate con crema de vainilla
+        price: 100
+        thumbnails: []
+        code: ABC123
+        stock: 10
+        status: true
+        category: Dulces
+        owner: admin
+
+  requestBodies:
+    newProduct:
+      type: object
+      properties:
+        title:
+          type: String
+          description: Nombre del producto
+          required: true
+        description:
+          type: String
+          description: Descripcion del producto
+          required: true
+        price:
+          type: Number
+          description: Precio del producto
+          required: true
+        thumbnails:
+          type: Array
+          description: Array con las URL de los thumbnails
+          items:
+            type: String
+        code:
+          type: String
+          description: Codigo de producto
+          required: true
+          unique: true
+        stock:
+          type: Number
+          description: Stock disponible del producto
+          required: true
+        status:
+          type: Boolean
+          description: Estado del producto en la tienda
+        category:
+          type: String
+          description: Categoria del producto
+          required: true
+        owner:
+          type: String
+          description: email que identifica al propietario del producto. En caso de no existir propietario su valor es 'admin'
+      example:
+        title: Galletas Cariocas
+        description: Galletas de chocolate con crema de vainilla
+        price: 100
+        thumbnails: []
+        code: ABC123
+        stock: 10
+        status: true
+        category: Dulces
+        owner: admin
+
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripcion del producto
+        price:
+          type: Number
+          description: Precio del producto
+        thumbnails:
+          type: Array
+          description: Array con las URL de los thumbnails
+          items:
+            type: String
+        code:
+          type: String
+          description: Codigo de producto
+          unique: true
+        stock:
+          type: Number
+          description: Stock disponible del producto
+        status:
+          type: Boolean
+          description: Estado del producto en la tienda
+        category:
+          type: String
+          description: Categoria del producto
+        owner:
+          type: String
+          description: email que identifica al propietario del producto. En caso de no existir propietario su valor es 'admin'
+      example:
+        title: Galletas Cariocas
+        description: Galletas de chocolate con crema de vainilla
+        price: 100
+        thumbnails: []
+        code: ABC123
+        stock: 10
+        status: true
+        category: Dulces
+        owner: admin
