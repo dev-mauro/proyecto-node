@@ -65,7 +65,7 @@ class CartController {
     const { cid, pid } = req.params;
     const { quantity = 1 } = req.body;
 
-    const { role, email } = req.session.user;
+    const { role, email } = req.session.user || {};
   
     try {
   
@@ -164,7 +164,7 @@ class CartController {
     const { cid } = req.params;
   
     try {
-      const response = await cartService.deleteCartProducts(cid);
+      const response = await cartService.clearCart(cid);
       res.send({
         status: 'success',
         payload: response,

@@ -18,12 +18,12 @@ class ProductController {
     const nextLink = result.hasNextPage ?
       getProductLink(req.query, result.nextPage) : null;
   
-    res.send( JSON.stringify({
+    res.send({
       status: "success",
       ...result,
       prevLink,
       nextLink,
-    }) );
+    });
   
   }
 
@@ -58,7 +58,7 @@ class ProductController {
   // Agrega un producto a la base de datos
   addProduct = async(req, res) => {
     const newProduct = req.body;
-    const { role, email } = req.session.user;
+    const { role, email } = req.session.user || {};
 
     if(!newProduct.title || !newProduct.price || !newProduct.description || !newProduct.code || !newProduct.stock || !newProduct.category) {
       CustomError.createError({
@@ -77,7 +77,7 @@ class ProductController {
   
       res.send({
         "status": "success",
-        "newProduct": newProduct
+        "newProduct": result
       });
   
       emitChangeInProducts( req );

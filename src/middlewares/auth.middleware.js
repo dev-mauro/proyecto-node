@@ -12,7 +12,7 @@ const publicRoute = (req, res, next) => {
 
 // Impide el acceso a usuarios no administradores
 const adminRoute = (req, res, next) => {
-  const { role } = req.session.user;
+  const { role } = req.session.user || {};
   if( role != 'admin' )
     return res.status(401).send({
       "status": "error",
@@ -24,7 +24,7 @@ const adminRoute = (req, res, next) => {
 
 // Impide el acceso a usuarios no premium o administradores 
 const premiumRoute = (req, res, next) => {
-  const { role } = req.session?.user;
+  const { role } = req.session.user || {};
   if( role != 'premium' && role != 'admin' )
     return res.status(401).send({
       "status": "error",

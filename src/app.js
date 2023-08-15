@@ -71,5 +71,5 @@ app.use('/chat', chatRouter);
 app.use('/', viewRouter );
 app.use('/mocking', mockingRouter );
 app.use('/loggertest', loggerRouter);
-app.use(errorHandler);
+// app.use(errorHandler);
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup( swaggerSpecs ));
