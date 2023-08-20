@@ -36,6 +36,8 @@ class SessionController {
       role: user.role,
     }
 
+    await userModel.updateOne({_id: user._id}, {last_connection: Date.now()});
+
     res.send({
       status: 'success',
       payload: req.session.user,
@@ -52,6 +54,10 @@ class SessionController {
 
   // Cierra la sesión iniciada
   logout = async(req, res) => {
+    if( req.session?.user ) {
+      await userModel.updateOne({email: user.email}, {last_connection: Date.now()});
+    }
+
     req.session.destroy();
     res.send({
       status: 'success',
@@ -136,35 +142,6 @@ class SessionController {
       status: 'success',
       message: 'Password reset successfully',
     })
-
-  }
-
-  // Cambia el rol de un usuario de 'premium' a 'user' y viceversa
-  togglePremium = async( req, res ) => {
-    const { uid } = req.params;
-
-    try {
-      const user = await userModel.findById( uid );
-
-      if( !user )
-        return res.status(404).send({
-          status: 'error',
-          message: 'User not found',
-        });
-
-      user.role = user.role == 'premium' ? 'user' : 'premium';
-      await user.save();
-
-      res.send({
-        status: 'success',
-        message: 'User role updated successfully',
-      });
-    } catch( error ) {
-      res.status(400).send({
-        status: 'error',
-        message: error.message,
-      });
-    }
 
   }
 

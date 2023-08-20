@@ -14,6 +14,7 @@ import viewRouter from "./routes/views.router.js";
 import chatRouter from "./routes/chat.router.js";
 import mockingRouter from "./routes/mocking.router.js"
 import loggerRouter from "./routes/logger.router.js";
+import userRouter from "./routes/users.router.js";
 
 import __dirname from "./utils.js";
 import initializePassport from "./config/passport.config.js"
@@ -67,6 +68,7 @@ app.use(addLogger);
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/sessions', sessionRouter);
+app.use('/api/users', userRouter);
 app.use('/chat', chatRouter);
 app.use('/', viewRouter );
 app.use('/mocking', mockingRouter );

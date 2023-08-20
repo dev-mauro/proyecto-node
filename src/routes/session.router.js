@@ -34,6 +34,4 @@ router.get('/githubcallback', passport.authenticate('github', {failureRedirect: 
 router.post('/resetpassword/:token', sessionController.resetPassword);
 router.post('/forgotpassword', sessionController.forgotPassword);
 
-router.get('/users/premium/:uid', sessionController.togglePremium);
-
 export default router;

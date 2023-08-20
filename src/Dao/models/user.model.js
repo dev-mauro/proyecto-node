@@ -37,6 +37,17 @@ const userSchema = new mongoose.Schema({
   },
   expireToken: {
     type: Date,
+  },
+  documents: {
+    type: [
+      {
+        name: String,
+        reference: String,
+      }
+    ]
+  },
+  last_connection: {
+    type: Date,
   }
 });
 
