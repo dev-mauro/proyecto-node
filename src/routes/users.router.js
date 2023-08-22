@@ -7,11 +7,15 @@ import {multerMiddleware, sources} from '../middlewares/multer.middleware.js';
 
 const router = Router();
 
-router.get('/premium/:uid', userController.togglePremium);
-
 // Recibe el id del usuario
 // en el body { documentType: 'dni' | 'address' | 'accountStatus' }
 // Recibe campo con un archivo. El nombre del campo debe ser 'document'
 router.post('/:uid/documents', multerMiddleware(sources.DOCUMENT), userController.uploadDocuments);
+
+// Cambia un usuario de 'premium' a 'user' y viceversa
+// Solo se puede cambiar a usuario premium si el usuario tiene todos los documentos cargados (dni, address y accountStatus)
+router.get('/premium/:uid', userController.togglePremium);
+
+
 
 export default router;

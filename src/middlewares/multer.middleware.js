@@ -8,7 +8,12 @@ const sources = {
   DOCUMENT: 'document', // user document
 }
 
-// Campo con un archivo. Los nombres de los campos deben ser 'profileImage', 'productImage' o 'document'
+// Función retorna el middleware de Multer configurado para cargar archivos. Recibe como parámetro el tipo de documento que se va a cargar.
+// Acepta los tipos de documentos indicados en la constante 'sources'
+
+// EJ: si se desea cargar una imagen de perfil se debe usar el middleware en el endpoint:
+// multerMiddleware(source.PROFILE) ó multerMiddleware('profileImage')'
+
 const multerMiddleware = ( sourceType ) => {
   let upload;
 

@@ -1,5 +1,6 @@
 import userModel from "../Dao/models/user.model.js";
 
+// Tipos de documentos permitidos
 const availableDocuementTypes = [
   'dni', 'address', 'accountStatus'
 ]
@@ -68,14 +69,16 @@ class UserController {
           message: 'Admin users cannot be premium',
         });
 
-      const userDocuments = await userModel.findById( uid, { documents: 1 } );
+      const { documents: userDocuments } = await userModel.findById( uid, { documents: 1 } );
+
+      const documentsNames = userDocuments.map( document => document.name );
 
       // Si el usuario no tiene todos los documentos subidos, no puede ser premium
       if( user.role === 'user' )
         if( 
-          !userDocuments.includes( 'accountStatus' ) ||
-          !userDocuments.includes( 'dni' ) ||
-          !userDocuments.includes( 'address' ) 
+          !documentsNames.includes( 'accountStatus' ) ||
+          !documentsNames.includes( 'dni' ) ||
+          !documentsNames.includes( 'address' ) 
         )
           return res.status(400).send({
             status: 'error',
