@@ -13,13 +13,12 @@ const publicRoute = (req, res, next) => {
 // Impide el acceso a usuarios no administradores
 const adminRoute = (req, res, next) => {
   const { role } = req.session.user || {};
-  if( role != 'admin' )
-    return res.status(401).send({
-      "status": "error",
-      "message": "You are not authorized to perform this action."
-    });
+  if( role === 'admin' )
+    req.authorized = true;
+  else
+    req.authorized = false;
 
-  else next();
+  next();
 }
 
 // Impide el acceso a usuarios no premium o administradores 

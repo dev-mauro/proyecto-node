@@ -55,6 +55,7 @@ class SessionController {
   // Cierra la sesión iniciada
   logout = async(req, res) => {
     if( req.session?.user ) {
+      const { user } = req.session;
       await userModel.updateOne({email: user.email}, {last_connection: Date.now()});
     }
 
@@ -97,7 +98,7 @@ class SessionController {
       subject: 'Recuperar contraseña',
       html: recoverPasswordHTML( token ),
     }
-    await transporter.sendMain( mailOptions );
+    await transporter.sendMail( mailOptions );
     */
 
     res.send({

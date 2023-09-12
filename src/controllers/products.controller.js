@@ -6,6 +6,7 @@ import {generateProductIDError, generateAddProductError} from "../errors/product
 import CustomError from '../errors/CustomError.js';
 import EErrors from '../errors/EErrors.js';
 import userModel from '../Dao/models/user.model.js';
+import { transporter } from '../config/gmail.config.js';
 
 class ProductController {
 
@@ -95,7 +96,7 @@ class ProductController {
   updateProduct = async(req, res) => {
     const productUpdate = req.body;
     const { pid } = req.params;
-    const { role, email } = req.session.user;
+    const { role, email } = req.session.user || {};
 
     try {
   
@@ -132,21 +133,36 @@ class ProductController {
   // Elimina un producto de la base de datos
   deleteProduct = async(req, res) => {
     const { pid } = req.params;
-    const { role, email } = req.session.user;
+    const { role, email } = req.session.user || {};
 
     try {
   
       // Se verifica que el usuario sea el dueño del producto
       if( role === 'premium' ) {
         const { owner } = await productService.getProductById( pid );
-        if( owner != email )
+
+        // El usuario es premium pero no dueño del producto. No puede eliminarlo.
+        if( owner != email ) {
           return res.status(401).send({
             "status": "error",
             "message": "You are not authorized to perform this action."
           });
+        // Es premium y es dueño. Se le notifica a través de email
+        } else {
+          /*
+          const mailOptions = {
+            from: 'proyecto-node',
+            to: email,
+            subject: 'Solicitud de eliminación de producto procesada',
+            html: `<h1>Se ha eliminado correctamente el producto ${pid}</h1>`,
+          }
+          await transporter.sendMail( mailOptions );
+          */
+        }
       }
 
       const result = await productService.deleteProduct( pid );
+
       res.send({
         "status": "success",
         "deletedID": pid

@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { productDao, cartDao } from "../Dao/factory.js";
 import { getProductLink } from "../helpers/getProductLink.js";
-import { publicRoute, privateRoute } from "../middlewares/auth.middleware.js";
+import { publicRoute, privateRoute, adminRoute } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -125,6 +125,18 @@ router.get('/resetpassword/:token', (req, res) => {
     script: 'resetpassword',
     token,
   });
+});
+
+
+// Vista de administrador que permite modificar los usuarios
+router.get('/manageusers', adminRoute,(req, res) => {
+  if( req.authorized )
+    return res.render('manageusers', {
+      script: 'manageusers',
+      style: 'home'
+    });
+
+  res.redirect('/login');
 });
 
 

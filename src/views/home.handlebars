@@ -33,8 +33,8 @@
       <td>{{this.thumbnail}}</td>
       <td>{{this.code}}</td>
       <td>{{this.stock}}</td>
-      <td><button><a href="http://localhost:8080/products/{{this._id}}">Ver detalles</a></button></td>
-      <td><button>Agregar al carrito</button></td>
+      <td><button><a href="/products/{{this._id}}">Ver detalles</a></button></td>
+      <td><button product-id="{{this._id}}">Agregar al carrito</button></td>
     </tr>
     {{/each}}
   </tbody>

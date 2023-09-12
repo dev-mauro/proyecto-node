@@ -33,7 +33,6 @@ const userSchema = new mongoose.Schema({
   },
   resetToken: {
     type: String,
-    unique: true,
   },
   expireToken: {
     type: Date,
