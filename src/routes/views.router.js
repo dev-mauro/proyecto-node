@@ -7,35 +7,11 @@ import { publicRoute, privateRoute, adminRoute } from "../middlewares/auth.middl
 const router = Router();
 
 router.get( '/products', async(req, res) => {
-  const response = await productDao.getProducts( req.query );
-
-  if( !response.payload ){
-    return res.render('home', {
-     products: response,
-     style: 'home',
-   });
-  }
-
-  const products = response.payload.map( product => product.toObject());
-  const baseURL = 'http://localhost:8080/products';
   const { user } = req.session;
 
-  const prevLink = response.hasPrevPage ? 
-    getProductLink(req.query, response.prevPage, baseURL) : null;
-  const nextLink = response.hasNextPage ?
-    getProductLink(req.query, response.nextPage, baseURL) : null;
-
   res.render('home', {
-    products,
     style: 'home',
     script: 'productView',
-    hasNextPage: response.hasNextPage,
-    hasPrevPage: response.hasPrevPage,
-    nextPage: response.nextPage,
-    previousPage: response.previousPage,
-    page: response.page,
-    prevLink,
-    nextLink,
     user,
   } );
 });
@@ -56,8 +32,12 @@ router.get('/products/:id', async(req, res) => {
   const { id } = req.params;
   const product = await productDao.getProductById(id);
 
+  const { user } = req.session;
+
   res.render('productDetail', {
     product: product.toObject(),
+    user,
+    script: 'productDetails'
   });
 });
 
@@ -139,5 +119,18 @@ router.get('/manageusers', adminRoute,(req, res) => {
   res.redirect('/login');
 });
 
+
+// Vista del carrito
+router.get('/cart', privateRoute, (req, res) => {
+
+  const { user } = req.session;
+
+  res.render('cart', {
+    style: 'home',
+    script: 'cart',
+    cid: user.cart,
+  });
+
+});
 
 export default router;

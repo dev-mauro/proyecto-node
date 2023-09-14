@@ -61,7 +61,8 @@ class CartManagerMongo {
     if(!cart) throw new Error('cart does not exist');
     
     const { products } = cart;
-    const productIndex = products.findIndex( product => product.product === pid );
+
+    const productIndex = products.findIndex( product => product.product == pid );
     if(productIndex == -1) throw new Error('product not found in cart');
     
     products.splice(productIndex, 1);

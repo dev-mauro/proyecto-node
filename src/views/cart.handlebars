@@ -1,31 +1,28 @@
-<h1>Carrito</h1>
+<h1>Carrito <span id="cart-id">{{this.cid}}</span></h1>
 
 <table>
   <thead>
     <th>ID</th>
     <th>Nombre</th>
     <th>Descripcion</th>
-    <th>Categoria</th>
     <th>Precio</th>
-    <th>Thumbnails</th>
     <th>Código</th>
     <th>Stock</th>
+    <th>Categoria</th>
     <th>En el carro</th>
   </thead>
-  <tbody>
-    {{#each products}}
-    <tr>
-      <td>{{this.product._id}}</td>
-      <td>{{this.product.title}}</td>
-      <td>{{this.product.description}}</td>
-      <td>{{this.product.category}}</td>
-      <td>{{this.product.price}}</td>
-      <td>{{this.product.thumbnail}}</td>
-      <td>{{this.product.code}}</td>
-      <td>{{this.product.stock}}</td>
-      <td>{{this.quantity}}</td>
-    </tr>
-    {{/each}}
+  <tbody id="table">
   </tbody>
 
 </table>
+
+<div style="margin-top: 25px">
+  <button id="clearCart-button">Vacíar Carrito</button>
+  <button id="purchase-button">Finalizar Compra</button>
+</div>
+
+<div id="purchase-details">
+
+</div>
+
+<script src="js/{{script}}.js"></script>

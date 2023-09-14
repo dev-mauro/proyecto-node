@@ -6,6 +6,15 @@
 <p>Código: {{product.code}}</p>
 <p>Stock: {{product.stock}}</p>
 
-<button style="display: block; margin-bottom: 10px;">Agregar al carrito</button>
+<form
+  action="/api/carts/{{user.cart}}/product/{{product._id}}"
+  id="form"
+>
+  <label for="number">Cantidad</label>
+  <input id="quantity" name="number" type="number" min="1" value="1" oninput="validity.valid||(value=1);">
+  <button style="display: block; margin-bottom: 10px;">Agregar al carrito</button>
+</form>
 
-<a href="http://localhost:8080/products">Volver a productos</a>
+<a href="/products">Volver a productos</a>
+
+<script src="/js/{{script}}.js"></script>

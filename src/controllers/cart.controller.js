@@ -106,8 +106,9 @@ class CartController {
         status: 'success',
         payload: response,
       });
+
     } catch(err) {
-      req.logger.error( error.message );
+      req.logger.error( err.message );
       res.status(404).send({
         status: 'error',
         message: err.message
@@ -189,7 +190,7 @@ class CartController {
 
     // Si no existe el carrito indicado
     if( !cart ){
-      req.logger.error( error.message );
+      req.logger.error( 'cart does not exist' );
       return res.status(404).send({
         status: 'error',
         message: 'cart does not exist'
@@ -201,7 +202,7 @@ class CartController {
 
     // Si el carrito no tiene productos
     if( products.length == 0) {
-      req.logger.error( error.message );
+      req.logger.error( 'cart is empty' );
       return res.status(400).send({
         status: 'error',
         message: 'cart is empty'
@@ -210,28 +211,41 @@ class CartController {
 
     // Se obtiene la información completa de los productos
     // product = id del producto, quantity = cantidad del producto
-    const fullInfoProducts = products.map( async({product, quantity}) => {
+    let fullInfoProducts = products.map( async({product, quantity}) => {
       const searchedProduct = await productService.getProductById( product );
       searchedProduct.quantity = quantity;
       return searchedProduct;
     });
 
+    fullInfoProducts = await Promise.all( fullInfoProducts );
+
     // Se verifica que haya stock suficiente para cada producto
-    fullInfoProducts.forEach( async( product ) => {
+    fullInfoProducts.forEach( ( product ) => {
       // Si hay, sumar el precio y restar stock
-      if( product.stock >= product.quantity ) {
+      const { stock, quantity } = product;
+      if( stock >= quantity ) {
         amount += product.price * product.quantity;
-        await productService.updateProduct( product._id, {stock: stock - quantity} );
+        productService.updateProduct( product._id, {stock: stock - quantity} );
       } 
       else
         unavailableProducts.push(product);
     });
 
+    // Si no hay stock para ningún producto
+    if( unavailableProducts.length == products.length )
+      return res.status(409).send({
+        status: 'error',
+        message: 'there is no stock for any product'
+      });
+
     // Se obtiene el email del dueño del carrito
-    const { email } = await userModel.find({cart: cid});
+    const { email } = await userModel.findOne({cart: cid});
 
     // Se genera el ticket de compra
     const ticket = await ticketService.addTicket( amount, email);
+
+    // Se vacía el carrito
+    await cartService.clearCart( cid );
 
     res.send({
       status: 'success',

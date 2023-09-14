@@ -1,4 +1,4 @@
-function getProductLink(query, page = 1, baseURL = 'http://localhost:8080/api/products'){
+function getProductLink(query, page = 1, baseURL = '/api/products'){
   const {limit = 10, sort, category, status} = query;
 
   let link = `${baseURL}?limit=${limit}&page=${page}`;
