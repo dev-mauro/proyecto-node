@@ -1,5 +1,5 @@
 const table = document.querySelector('#table-body');
-const cartId = document.querySelector('#cart-id').textContent;
+const cartId = document.querySelector('#cart-id')?.textContent || '';
 const pageNumberSpan = document.querySelector('#page-number');
 const previousPageButton = document.querySelector('#previous');
 const nextPageButton = document.querySelector('#next');

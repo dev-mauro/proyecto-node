@@ -80,7 +80,7 @@ const initializePassport = () => {
     {
       clientID: 'Iv1.b5c47551f9ed2702',
       clientSecret: '481d9ceefc870d8423e8742c291245d4a34564fe',
-      callbackURL: '/api/sessions/githubcallback',
+      callbackURL: 'https://proyecto-node-production-ff7b.up.railway.app/api/sessions/githubcallback',
     },
     async (accessToken, refreshToken, profile, done) => {
       console.log( profile );

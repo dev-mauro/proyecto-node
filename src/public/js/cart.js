@@ -88,6 +88,7 @@ purchaseButton.addEventListener('click', async ( ) => {
 
   purchaseDetails.innerHTML = `
     <h3>Detalles de la compra</h3>
+    <p>Código: ${ticket.code}</p>
     <p>Monto Total: $${ticket.amount}</p>
     <p>Fecha: ${new Date(ticket.purchase_datetime)}</p>
     <p>Comprador: ${ticket.purchaser}</p>
