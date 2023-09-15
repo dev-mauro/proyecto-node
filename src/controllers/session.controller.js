@@ -89,7 +89,7 @@ class SessionController {
     user.expireToken = resetTokenExpiration;
     await user.save();
 
-    console.log(`http://localhost:8080/resetpassword/${resetToken}`)
+    console.log(`/resetpassword/${resetToken}`)
 
     /*
     const mailOptions = {

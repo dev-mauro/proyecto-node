@@ -16,7 +16,7 @@ form.onsubmit = (e) => {
   const email = userEmailInput.value;
 
   if(email && message)
-    fetch('http://localhost:8080/chat', {
+    fetch('/chat', {
       method: 'POST',
       body: JSON.stringify({
         user: email,

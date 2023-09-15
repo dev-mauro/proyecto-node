@@ -80,7 +80,7 @@ const initializePassport = () => {
     {
       clientID: 'Iv1.b5c47551f9ed2702',
       clientSecret: '481d9ceefc870d8423e8742c291245d4a34564fe',
-      callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
+      callbackURL: '/api/sessions/githubcallback',
     },
     async (accessToken, refreshToken, profile, done) => {
       console.log( profile );
