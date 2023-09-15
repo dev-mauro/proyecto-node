@@ -24,6 +24,9 @@ const getTableRow = ( user ) => {
   const emailCell = document.createElement('td');
   emailCell.textContent = user.email;
 
+  const roleCell = document.createElement('td');
+  roleCell.textContent = user.role;
+
   const toggleRoleButton = document.createElement('button');
   toggleRoleButton.textContent = 'Cambiar Rol';
   toggleRoleButton.addEventListener('click', getToggleRoleFunction(user));
@@ -39,6 +42,7 @@ const getTableRow = ( user ) => {
   tableRow.appendChild( nameCell );
   tableRow.appendChild( lastnameCell );
   tableRow.appendChild( emailCell );
+  tableRow.appendChild( roleCell );
   tableRow.appendChild( actionsCell );
 
   return tableRow;
